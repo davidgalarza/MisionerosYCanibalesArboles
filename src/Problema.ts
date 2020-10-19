@@ -12,6 +12,7 @@ class Problema {
     estadoInicial: Estado;
     estadoObjectivo: Estado;
     acciones: Function[];
+    
     estadoValido: Function;
 
     estadosEncontrados: Estado[] = [];
@@ -26,11 +27,8 @@ class Problema {
         this.estadoValido = estadoValido;
 
         let nodoRaiz = new Nodo(estadoInicial);
+        
         this.obtnerConjuntoDeEstados(nodoRaiz);
-
-        //console.log(nodoRaiz.hijos[0].hijos[0]);
-        //console.log(this.estadosEncontrados);
-        console.log(this.estadosEncontrados.length);
 
         
     }
