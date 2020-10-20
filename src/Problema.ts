@@ -14,7 +14,6 @@ class Problema {
     estadoObjectivo: Estado;
     acciones: Function[];
     
-    estadoValido: Function;
 
     estadosEncontrados: Estado[] = [];
 
@@ -22,11 +21,10 @@ class Problema {
     indent:number = 1;
     
 
-    constructor(estadoInicial: Estado, estadoObjectivo: Estado, acciones: Function[], estadoValido: Function){
+    constructor(estadoInicial: Estado, estadoObjectivo: Estado, acciones: Function[]){
         this.estadoInicial = estadoInicial;
         this.estadoObjectivo = estadoObjectivo;
         this.acciones = acciones;
-        this.estadoValido = estadoValido;
 
         let nodoRaiz = new Nodo(estadoInicial);
         let nodoObjetivo = new Nodo(estadoObjectivo);
@@ -73,19 +71,22 @@ class Problema {
                 estadosSiguientes.push(accion(nodo.estado));
             });
             estadosSiguientes = estadosSiguientes.filter((e) => e != null);
-            estadosSiguientes = estadosSiguientes.filter((e) => !this.estadosEncontrados.some(en => en.igual(e)));
-            estadosSiguientes = estadosSiguientes.filter((e) => this.estadoValido(e));
+
             nodo.hijos = [];
             estadosSiguientes.forEach((es) => { 
                 nodo.anadirHijo(es);
             });
 
-
             for (let i = 0; i < nodo.hijos.length; i++){
                 let hijo = nodo.hijos[i];
-                let resultado: Nodo =  this.bpl(hijo, objetivo, profundidad-1);
-                if(resultado){
-                    return resultado;
+                let estadoEncontrado = this.estadosEncontrados.some(en => en.igual(hijo.estado));
+                if(hijo.estado.esValido && !estadoEncontrado){
+                    let resultado: Nodo =  this.bpl(hijo, objetivo, profundidad-1);
+                    if(resultado){
+                        return resultado;
+                    }
+                } else if(estadoEncontrado){
+                    hijo.estado.duplicado = true;
                 }
             }
         } else {

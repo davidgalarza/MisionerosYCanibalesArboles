@@ -4,13 +4,27 @@ class Estado {
     orillaIzquierda: String[];
     orillaDerecha: String[];
     posicionBote: PosicionBote;
+    esValido:boolean;
+    duplicado: boolean;
 
     
 
-    constructor(orillaIzquierda: String[], orillaDerecha: String[], posicionBote: PosicionBote){
+    constructor(orillaIzquierda: String[], orillaDerecha: String[], posicionBote: PosicionBote, duplicado: boolean = false){
         this.orillaIzquierda = orillaIzquierda;
         this.orillaDerecha = orillaDerecha;
         this.posicionBote = posicionBote;
+        this.esValido = this.estadoValido();
+        this.duplicado = duplicado;
+    }
+
+    estadoValido(): boolean {
+        let numMiIz = this.orillaIzquierda.filter((e) => e == 'M').length;
+        let numMiDe = this.orillaDerecha.filter((e) => e == 'M').length;
+        let numCaIz = this.orillaIzquierda.filter((e) => e == 'C').length;
+        let numCaDe = this.orillaDerecha.filter((e) => e == 'C').length;
+        if(numMiIz == 0 )numMiIz = 5;
+        if(numMiDe == 0 )numMiDe = 5;
+        return numMiIz >= numCaIz && numMiDe >= numCaDe;
     }
 
     igual(estado: Estado) : boolean {

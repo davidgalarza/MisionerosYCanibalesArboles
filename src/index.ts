@@ -120,15 +120,7 @@ function transportarCanibal(estadoOrigen: Estado): Estado{
 }
 
 
-function estadoValido(estado: Estado): boolean {
-    let numMiIz = estado.orillaIzquierda.filter((e) => e == 'M').length;
-    let numMiDe = estado.orillaDerecha.filter((e) => e == 'M').length;
-    let numCaIz = estado.orillaIzquierda.filter((e) => e == 'C').length;
-    let numCaDe = estado.orillaDerecha.filter((e) => e == 'C').length;
-    if(numMiIz == 0 )numMiIz = 5;
-    if(numMiDe == 0 )numMiDe = 5;
-    return numMiIz >= numCaIz && numMiDe >= numCaDe;
-}
+
 
 
 
@@ -154,4 +146,4 @@ function quitarNElementos(lista:String[], elemento: String, nElementos: number):
     });
 }
 
-let problema = new Problema(estadoInicial, estadoObjetivo, acciones, estadoValido);
+let problema = new Problema(estadoInicial, estadoObjetivo, acciones);
