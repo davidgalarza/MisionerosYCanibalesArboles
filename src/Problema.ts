@@ -157,6 +157,12 @@ class Problema {
       </div>
 
       <h3>Conjuntos de estados</h3>
+      <div class="tags">
+        <span class="nodo_camino">- Siguiente paso</span>
+        <span class="nodo_muerte">- Muerte</span>
+        <span>- Repetido</span>
+        <span class="nodo_solucion">- Objetivo</span>
+      </div>
         ${this.html(nodo)}
 
         <h3>Secuencia de estados</h3>

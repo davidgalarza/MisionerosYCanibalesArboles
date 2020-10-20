@@ -7,6 +7,10 @@ ul,
   list-style-type: none;
 }
 
+#myUL {
+  margin-left: 1em;
+}
+
 /* Remove margins and padding from the parent ul */
 #myUL {
   margin: 0;
@@ -69,5 +73,33 @@ ul,
 }
 
 .titulo {
+  font-weight: bold;
+}
+
+.fondo_camino {
+  background-color: #226ce0;
+}
+
+.fondo_solucion {
+  background-color: #20bf55;
+  font-weight: bold;
+}
+
+.fondo_muerte {
+  background-color: #d1495b;
+}
+
+.cuadrado {
+  width: 1em;
+  height: 1em;
+  margin-top: 0.5em;
+  border-radius: 0.3em;
+}
+.tags {
+  margin-bottom: 1em;
+}
+
+.tags span {
+  margin-right: 1em;
   font-weight: bold;
 }
