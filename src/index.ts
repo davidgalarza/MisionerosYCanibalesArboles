@@ -8,7 +8,7 @@ let estadoInicial = new Estado(
     PosicionBote.DERECHA);
 
 let estadoObjetivo = new Estado(
-        ['M', 'M', 'M', 'C', 'C', 'C'], 
+        ['C', 'C','C',  'M', 'M', 'M'], 
         [], 
         PosicionBote.IZQUIERDA);
 
