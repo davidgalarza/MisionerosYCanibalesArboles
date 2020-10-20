@@ -19,6 +19,7 @@ class Problema {
     estadosEncontrados: Estado[] = [];
 
     conjuntoDeEsatados: Arbol;
+    indent:number = 1;
     
 
     constructor(estadoInicial: Estado, estadoObjectivo: Estado, acciones: Function[], estadoValido: Function){
@@ -31,14 +32,16 @@ class Problema {
         let nodoObjetivo = new Nodo(estadoObjectivo);
         
         let res: Nodo = this.bpi(nodoRaiz, nodoObjetivo);
-        console.log('========RESULTADO====');
-        console.log(res);
-        console.log('ENCONTRADOS');
-        console.log(this.estadosEncontrados.length);
+        // console.log('========RESULTADO====');
+        // console.log(res);
+        // console.log('ENCONTRADOS');
+        // console.log(this.estadosEncontrados.length);
         this.estadosEncontrados.forEach((e) =>{
-            console.log(e);
+            console.log(e.toString());
         });
-        console.log(nodoRaiz);
+
+        this.imprimirArbol(nodoRaiz);
+        //console.log(nodoRaiz.hijos[0].hijos[0].hijos[0].estado.toString());
         
     }
 
@@ -48,11 +51,10 @@ class Problema {
 
         let profundidad: number = 0;
 
-        while(true){
+        while(true) {
             this.estadosEncontrados = [];
             let resultado: Nodo = this.bpl(raiz, objetivo, profundidad)
             if(resultado){
-                console.log(profundidad);
                 return resultado;
             }
             profundidad++;
@@ -73,12 +75,16 @@ class Problema {
             estadosSiguientes = estadosSiguientes.filter((e) => e != null);
             estadosSiguientes = estadosSiguientes.filter((e) => !this.estadosEncontrados.some(en => en.igual(e)));
             estadosSiguientes = estadosSiguientes.filter((e) => this.estadoValido(e));
-            estadosSiguientes.forEach((es) => nodo.anadirHijo(es));
-            for (let i = 0; i < estadosSiguientes.length; i++){
-                let hijo = estadosSiguientes[i];
-                let resultado: Nodo =  this.bpl(new Nodo(hijo), objetivo, profundidad-1);
+            nodo.hijos = [];
+            estadosSiguientes.forEach((es) => { 
+                nodo.anadirHijo(es);
+            });
+
+
+            for (let i = 0; i < nodo.hijos.length; i++){
+                let hijo = nodo.hijos[i];
+                let resultado: Nodo =  this.bpl(hijo, objetivo, profundidad-1);
                 if(resultado){
-                    
                     return resultado;
                 }
             }
@@ -88,18 +94,18 @@ class Problema {
 
     }
 
-    // obtnerConjuntoDeEstados(actual: Nodo) {
-    //     // this.estadosEncontrados.push(actual.estado);
-    //     // let estadosSiguientes = [];
-    //     // this.acciones.forEach((accion) =>{
-    //     //     estadosSiguientes.push(accion(actual.estado));
-    //     // });
-    //     // estadosSiguientes = estadosSiguientes.filter((e) => e != null);
-    //     // estadosSiguientes = estadosSiguientes.filter((e) => !this.estadosEncontrados.some(en => en.igual(e)));
-    //     // estadosSiguientes = estadosSiguientes.filter((e) => this.estadoValido(e));
-    //     // estadosSiguientes.forEach((es) => actual.anadirHijo(es));
-    //     // actual.hijos.forEach((h) => this.obtnerConjuntoDeEstados(h));
-    // }
+    stringArbol(nodo: Nodo, espacios:number = 0){
+        let str ='\n';
+        nodo.hijos.forEach((hijo) =>{
+            str += `${" ".repeat(espacios)}${hijo.estado.toString()}${this.stringArbol(hijo, espacios+2)}`
+        });
+        return str;
+    }
+    
+    imprimirArbol(nodoRaiz: Nodo){
+        console.log(`\n${nodoRaiz.estado.toString()}${this.stringArbol(nodoRaiz, 2)}`)
+    }
+
 
 
 }

@@ -34,8 +34,20 @@ class Estado {
 
 
     }
-    
 
+    public toString = () : string => {
+
+        let numMiIz = this.orillaIzquierda.filter((e) => e == 'M').length;
+        let numMiDe = this.orillaDerecha.filter((e) => e == 'M').length;
+        let numCaIz = this.orillaIzquierda.filter((e) => e == 'C').length;
+        let numCaDe = this.orillaDerecha.filter((e) => e == 'C').length;
+
+        let posBote = this.posicionBote == PosicionBote.DERECHA ? 'D' : 'I';
+
+        return `${numMiIz}M:${numCaIz}C - ${numMiDe}M:${numCaDe}C - B${posBote}`;
+    }
+
+    
     
 }
 
