@@ -32,15 +32,6 @@ class Problema {
         let nodoObjetivo = new Nodo(estadoObjectivo);
         
         let res: Nodo = this.bpi(nodoRaiz, nodoObjetivo);
-        // console.log('========RESULTADO====');
-        // console.log(res);
-        // console.log('ENCONTRADOS');
-        // console.log(this.estadosEncontrados.length);
-        // this.estadosEncontrados.forEach((e) =>{
-        //     console.log(e.toString());
-        // });
-
-        //this.imprimirArbol(nodoRaiz);
        
 
         for (let i = 1; i < this.estadosEncontrados.length; i++) {
@@ -52,7 +43,6 @@ class Problema {
         this.crearArchivo(nodoRaiz);
 
 
-        //console.log(nodoRaiz.hijos[0].hijos[0].hijos[0].estado.toString());
         
     }
 
@@ -168,6 +158,12 @@ class Problema {
 
       <h3>Conjuntos de estados</h3>
         ${this.html(nodo)}
+
+        <h3>Secuencia de estados</h3>
+
+        <ul>
+            ${this.estadosEncontrados.reduce((m, c) => m+`<li>${c.toString()}</li>`, '')}
+        </ul>
 
         <h3>Pasos</h3>
 
