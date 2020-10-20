@@ -8,6 +8,8 @@ import Arbol from "./Arbol/Arbol";
 import Nodo from './Arbol/Nodo';
 import console from "console";
 
+var fs = require('fs');
+
 class Problema {
 
     estadoInicial: Estado;
@@ -34,11 +36,12 @@ class Problema {
         // console.log(res);
         // console.log('ENCONTRADOS');
         // console.log(this.estadosEncontrados.length);
-        this.estadosEncontrados.forEach((e) =>{
-            console.log(e.toString());
-        });
+        // this.estadosEncontrados.forEach((e) =>{
+        //     console.log(e.toString());
+        // });
 
         this.imprimirArbol(nodoRaiz);
+        //this.crearArchivo(nodoRaiz);
         //console.log(nodoRaiz.hijos[0].hijos[0].hijos[0].estado.toString());
         
     }
@@ -105,6 +108,56 @@ class Problema {
     
     imprimirArbol(nodoRaiz: Nodo){
         console.log(`\n${nodoRaiz.estado.toString()}${this.stringArbol(nodoRaiz, 2)}`)
+    }
+
+
+    htmlArbol(nodo: Nodo, espacios:number = 0){
+        let str ='\n';
+        nodo.hijos.forEach((hijo) =>{
+            let esCamino = this.estadosEncontrados.some(en => en.igual(hijo.estado)) && hijo.hijos.length > 0;
+            let esSolucion = this.estadoObjectivo.igual(hijo.estado);
+            let muerte = !hijo.estado.esValido;
+            str += `<li><span class="caret ${esCamino ? 'nodo_camino' : ''} ${esSolucion ? 'nodo_solucion' : ''} ${muerte ? 'nodo_muerte' : ''}">${hijo.estado.toString()}${esSolucion ? ' 🎊' : ''} ${muerte ? '⚰️☠️' : ''}</span><ul class="nested">${this.htmlArbol(hijo, espacios+2)}</ul></li>`
+        });
+        return str;
+    }
+    
+    html(nodoRaiz: Nodo){
+        return (`<ul id="myUL"><span class="caret nodo_camino">${nodoRaiz.estado.toString()}</span><ul class="nested">${this.htmlArbol(nodoRaiz, 2)}</ul></ul>`)
+    }
+
+
+    crearArchivo(nodo: Nodo){
+        let contenidoHTML = `<!DOCTYPE html>
+        <html lang="en">
+        <head>
+            <meta charset="UTF-8">
+            <meta name="viewport" content="width=device-width, initial-scale=1.0">
+            <title>Document</title>
+        <link rel="stylesheet" href="style.css">
+        </head>
+        <body>
+            
+        ${this.html(nodo)}
+        
+            <script >
+                var toggler = document.getElementsByClassName("caret");
+        var i;
+        
+        for (i = 0; i < toggler.length; i++) {
+          toggler[i].addEventListener("click", function() {
+            this.parentElement.querySelector(".nested").classList.toggle("active");
+            this.classList.toggle("caret-down");
+          });
+        }
+            </script>
+        </body>
+        </html>`;
+
+        fs.writeFile('./src/index.html',contenidoHTML,() => {
+            console.log('CREADO')
+        });
+
     }
 
 
