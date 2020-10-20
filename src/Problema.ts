@@ -16,11 +16,11 @@ class Problema {
     estadoObjectivo: Estado;
     acciones: Function[];
     
-
+    movimientos: String[] = [];
     estadosEncontrados: Estado[] = [];
 
     conjuntoDeEsatados: Arbol;
-    indent:number = 1;
+
     
 
     constructor(estadoInicial: Estado, estadoObjectivo: Estado, acciones: Function[]){
@@ -40,8 +40,18 @@ class Problema {
         //     console.log(e.toString());
         // });
 
-        this.imprimirArbol(nodoRaiz);
-        //this.crearArchivo(nodoRaiz);
+        //this.imprimirArbol(nodoRaiz);
+       
+
+        for (let i = 1; i < this.estadosEncontrados.length; i++) {
+            const estadoNuevo = this.estadosEncontrados[i];
+            const estadoAnterior = this.estadosEncontrados[i-1];
+            this.movimientos.push(estadoAnterior.cambioParaLlegar(estadoNuevo));
+        }
+
+        this.crearArchivo(nodoRaiz);
+
+
         //console.log(nodoRaiz.hijos[0].hijos[0].hijos[0].estado.toString());
         
     }
@@ -137,8 +147,33 @@ class Problema {
         <link rel="stylesheet" href="style.css">
         </head>
         <body>
-            
+        <div class="centrar">
+        <h2>Solucion</h2>
+        <div class="caja">
+          <span class="desc">${this.estadoInicial.toString()}</span>
+          <br />
+          <span class="titulo">Estado Inicial</span>
+        </div>
+        <div class="caja">
+          <span class="desc">${this.estadoObjectivo.toString()}</span>
+          <br />
+          <span class="titulo">Estado Objetivo</span>
+        </div>
+        <div class="caja">
+          <span class="desc">${this.estadosEncontrados.length}</span>
+          <br />
+          <span class="titulo">Numero de estados</span>
+        </div>
+      </div>
+
+      <h3>Conjuntos de estados</h3>
         ${this.html(nodo)}
+
+        <h3>Pasos</h3>
+
+        <ul>
+            ${this.movimientos.reduce((m, c) => c+`<li>${m}</li>`, '')}
+        </ul>
         
             <script >
                 var toggler = document.getElementsByClassName("caret");
@@ -157,6 +192,7 @@ class Problema {
         fs.writeFile('./src/index.html',contenidoHTML,() => {
             console.log('CREADO')
         });
+        
 
     }
 

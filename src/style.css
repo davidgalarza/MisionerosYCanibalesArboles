@@ -54,3 +54,20 @@ ul,
 .nodo_muerte {
   color: #d1495b;
 }
+
+.centrar {
+  text-align: center;
+}
+
+.caja {
+  margin: 1em 2em;
+  display: inline-block;
+  font-size: 1.2em;
+  border: 1px solid #161925;
+  border-radius: 1em;
+  padding: 1em;
+}
+
+.titulo {
+  font-weight: bold;
+}
