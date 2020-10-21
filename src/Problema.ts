@@ -4,7 +4,6 @@
  */
 
 import Estado from "./Estado";
-import Arbol from "./Arbol/Arbol";
 import Nodo from './Arbol/Nodo';
 import console from "console";
 
@@ -12,14 +11,13 @@ var fs = require('fs');
 
 class Problema {
 
-    estadoInicial: Estado;
-    estadoObjectivo: Estado;
-    acciones: Function[];
+    estadoInicial: Estado; // Estado del nodo raiz
+    estadoObjectivo: Estado; // Estado del nodo objetivo
+    acciones: Function[]; // Acciones que modifican los estados
     
-    movimientos: String[] = [];
-    estadosEncontrados: Estado[] = [];
+    movimientos: String[] = []; // Acciones a ejecutar para llegar al estado objetivo
+    estadosEncontrados: Estado[] = []; // Historial de nodos que se encntraron
 
-    conjuntoDeEsatados: Arbol;
 
     
 
@@ -28,10 +26,10 @@ class Problema {
         this.estadoObjectivo = estadoObjectivo;
         this.acciones = acciones;
 
-        let nodoRaiz = new Nodo(estadoInicial);
-        let nodoObjetivo = new Nodo(estadoObjectivo);
+        let nodoRaiz = new Nodo(estadoInicial); // Crear nodo raiz 
+        let nodoObjetivo = new Nodo(estadoObjectivo); // Crear nodo objetivo
         
-        let res: Nodo = this.bpi(nodoRaiz, nodoObjetivo);
+        let res: Nodo = this.bpi(nodoRaiz, nodoObjetivo); // Busqueda en profundidad iterativa
        
 
         for (let i = 1; i < this.estadosEncontrados.length; i++) {
@@ -40,6 +38,16 @@ class Problema {
             this.movimientos.push(estadoAnterior.cambioParaLlegar(estadoNuevo));
         }
 
+        console.log('===== ARBOL =====');
+        this.imprimirArbol(nodoRaiz);
+
+        console.log('===== ESTADOS =====');
+
+        this.estadosEncontrados.forEach((estado) =>{
+            console.log(estado.toString());
+        })
+
+
         this.crearArchivo(nodoRaiz);
 
 
@@ -47,7 +55,7 @@ class Problema {
     }
 
 
-
+    // Busqueda en profundidad iterativa
     bpi(raiz: Nodo, objetivo: Nodo){
 
         let profundidad: number = 0;
@@ -58,41 +66,53 @@ class Problema {
             if(resultado){
                 return resultado;
             }
-            profundidad++;
+            profundidad++; // Aumentar profundidad maxima mientras no encuentre el resultado
         }
 
     }
 
-
+    // Busqueda profundidad limitada
     bpl(nodo: Nodo, objetivo: Nodo, profundidad: number): Nodo{
-        this.estadosEncontrados.push(nodo.estado);
+        this.estadosEncontrados.push(nodo.estado); // anadir al historial de estados
         if(profundidad == 0 && nodo.estado.igual(objetivo.estado)){
-            return nodo;
+            return nodo; // Retorna cuando llega al objetivo
         } else if(profundidad > 0) {
+            // Cuando debe bajar aun mas
             let estadosSiguientes: Estado[] = [];
             this.acciones.forEach((accion) =>{
+                // Ejecutar las accines sobre el nodo
                 estadosSiguientes.push(accion(nodo.estado));
             });
+
+            // Quitar las acciones que no se pueden ejecutar
             estadosSiguientes = estadosSiguientes.filter((e) => e != null);
 
+
+            // Anadir al nodo actual los hijos
             nodo.hijos = [];
             estadosSiguientes.forEach((es) => { 
                 nodo.anadirHijo(es);
             });
 
+            // Volver a buscar en los hijos
             for (let i = 0; i < nodo.hijos.length; i++){
                 let hijo = nodo.hijos[i];
-                let estadoEncontrado = this.estadosEncontrados.some(en => en.igual(hijo.estado));
+                // true si ya esta en el historial
+                let estadoEncontrado: boolean = this.estadosEncontrados.some(en => en.igual(hijo.estado));
+
                 if(hijo.estado.esValido && !estadoEncontrado){
+                    // Si sigue vivo y no se a visitado el nodo buscar de nuevo
                     let resultado: Nodo =  this.bpl(hijo, objetivo, profundidad-1);
                     if(resultado){
                         return resultado;
                     }
                 } else if(estadoEncontrado){
+                    // Si ya esta en el historial marcar como duplicado
                     hijo.estado.duplicado = true;
                 }
             }
         } else {
+            // No se encontro nada en la busqueda
             return null;
         }
 
@@ -110,6 +130,8 @@ class Problema {
         console.log(`\n${nodoRaiz.estado.toString()}${this.stringArbol(nodoRaiz, 2)}`)
     }
 
+
+    // 
 
     htmlArbol(nodo: Nodo, espacios:number = 0){
         let str ='\n';

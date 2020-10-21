@@ -5,24 +5,39 @@ import Problema from "./Problema";
 let estadoInicial = new Estado(
     [], 
     ['M', 'M', 'M', 'C', 'C', 'C'], 
-    PosicionBote.DERECHA);
+    PosicionBote.DERECHA); // Estado del nodo raiz
 
 let estadoObjetivo = new Estado(
         ['C', 'C','C',  'M', 'M', 'M'], 
         [], 
-        PosicionBote.IZQUIERDA);
+        PosicionBote.IZQUIERDA); // Estado al que se quiere llegar
+
+
+// let estadoInicial = new Estado(
+//             [], 
+//             ['M', 'M', 'M', 'C', 'C', 'C'], 
+//             PosicionBote.DERECHA); // Estado del nodo raiz
+        
+// let estadoObjetivo = new Estado(
+//                 ['C', 'C','C'], 
+//                 ['M', 'M', 'M'], 
+//                 PosicionBote.IZQUIERDA); // Estado al que se quiere llegar
 
 
 function transportar2Misioneros(estadoOrigen: Estado): Estado{
+
+    // Crear copias de las orillas
     let nuevaOrillaIzquierda = estadoOrigen.orillaIzquierda.map((e) => e);
     let nuevaOrillaDerecha = estadoOrigen.orillaDerecha.map((e) => e);
     let nuevaPosBote;
+
     if(estadoOrigen.posicionBote == PosicionBote.DERECHA){
+        // Verificar si se puede ejecutar el movimiento
         if(estadoOrigen.orillaDerecha.filter(e => e == 'M').length < 2) return null;
         nuevaOrillaDerecha = quitarNElementos(nuevaOrillaDerecha, 'M', 2);
         nuevaOrillaIzquierda.push('M');
         nuevaOrillaIzquierda.push('M');
-        nuevaPosBote = PosicionBote.IZQUIERDA;
+        nuevaPosBote = PosicionBote.IZQUIERDA; // Cambiar de orilla
     } else {
         if(estadoOrigen.orillaIzquierda.filter(e => e == 'M').length < 2) return null;
         nuevaOrillaIzquierda = quitarNElementos(nuevaOrillaIzquierda, 'M', 2);
@@ -31,6 +46,7 @@ function transportar2Misioneros(estadoOrigen: Estado): Estado{
         nuevaPosBote = PosicionBote.DERECHA;
     }
 
+    // Retorna el estado modificado
     return new Estado(nuevaOrillaIzquierda, nuevaOrillaDerecha, nuevaPosBote);
 }
 
@@ -123,7 +139,7 @@ function transportarCanibal(estadoOrigen: Estado): Estado{
 
 
 
-
+// Acciones a ejecutar por nodo
 let acciones = [
     transportar2Misioneros, 
     transportar2Canibales,
@@ -132,7 +148,7 @@ let acciones = [
     transportarCanibal
 ]
 
-
+// Quita N elementos de la lista pasada
 function quitarNElementos(lista:String[], elemento: String, nElementos: number): String[]{
     let quitados: number = 0;
     
@@ -146,4 +162,6 @@ function quitarNElementos(lista:String[], elemento: String, nElementos: number):
     });
 }
 
+
+// Crear un problema con el estado inicial, el estado objetivo y las acciones que modifican el estado
 let problema = new Problema(estadoInicial, estadoObjetivo, acciones);
